@@ -31,8 +31,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .text()
         .await?;
 
-    let config: types::Config = serde_yaml::from_str(&resp).unwrap();
-    let proxies: Vec<types::Proxy> = serde_yaml::from_value(config.proxies).expect(&format!("Invalid yml: {}", &resp));
+    let config: types::Config = serde_yaml::from_str(&resp).expect(&format!("Malformed response: {}", &resp));
+    let proxies: Vec<types::Proxy> = serde_yaml::from_value(config.proxies).expect(&format!("Malformed proxy field: {}", &resp));
 
     let mut output = HashMap::new();
     output.insert("hk", Vec::new());
@@ -40,6 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     output.insert("us", Vec::new());
     output.insert("jp", Vec::new());
     output.insert("cn", Vec::new());
+    output.insert("all", Vec::new());
 
     for proxy in proxies.iter() {
         if proxy.name.contains("香港") || proxy.server.contains("hk") {
@@ -53,6 +54,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else if proxy.name.contains("中国") || proxy.server.contains("cn") {
             output.get_mut("cn").unwrap().push(proxy);
         }
+
+        output.get_mut("all").unwrap().push(proxy);
     }
 
     

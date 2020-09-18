@@ -10,15 +10,21 @@ name: Create Release
 jobs:
   build:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        target: [x86_64-unknown-linux-gnu, x86_64-apple-darwin]
+        os: [ubuntu-latest]
+        target: [x86_64-unknown-linux-gnu]
+        include:
+          - os: macos-latest
+            target: x86_64-apple-darwin
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Add target
+        run: rustup target add ${{ matrix.target }}
       - name: Build
-        run: cargo build --verbose --bins --release --target ${{ matrix.target }}
+        run: cargo build --bins --release --target ${{ matrix.target }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
