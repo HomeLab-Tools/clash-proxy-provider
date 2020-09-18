@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Proxy {
     pub name: String,
-    #[serde(rename(deserialize="type"))]
+    #[serde(rename = "type")]
     typ: String,
     pub server: String,
     port: u16,
