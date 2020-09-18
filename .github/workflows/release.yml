@@ -8,8 +8,22 @@ env:
 
 name: Create Release
 jobs:
+  create_release:
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+             ${{ github.event.message }}
+          draft: false
+          prerelease: false
   build:
-    name: Create Release
+    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -25,18 +39,6 @@ jobs:
         run: rustup target add ${{ matrix.target }}
       - name: Build
         run: cargo build --bins --release --target ${{ matrix.target }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-             ${{ github.event.message }}
-          draft: false
-          prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
