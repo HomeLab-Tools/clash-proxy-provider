@@ -60,6 +60,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     
     for (loc, proxies) in &output {
+        if proxies.len() == 0 {
+            continue
+        }
+        
         let c = types::Config{
             proxies: serde_yaml::to_value(proxies).unwrap()
         };

@@ -1,3 +1,4 @@
+use std::collections::BTreeMap as Map;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -13,6 +14,11 @@ pub struct Proxy {
     password: String,
     #[serde(default)]
     udp: bool,
+    #[serde(default)]
+    plugin: String,
+    #[serde(default, rename="plugin-opts")]
+    plugin_obfs: Map<String, String>
+
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
